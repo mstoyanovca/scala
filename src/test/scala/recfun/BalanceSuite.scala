@@ -1,37 +1,37 @@
 package recfun
 
-import org.scalatest.FreeSpec
+import org.scalatest.{FreeSpec, Matchers}
 
-class BalanceSuite extends FreeSpec {
+class BalanceSuite extends FreeSpec with Matchers {
 
-  "Given" - {
-    "When" - {
-      "Then" in {
-        assert(Main.balance("(if (zero? x) max (/ 1 x))".toList))
+  "Given a string as an argument" - {
+    "When the balance function is run" - {
+      "Then it should return true" in {
+        Main.balance("(if (zero? x) max (/ 1 x))".toList) shouldBe true
       }
     }
   }
 
-  "Given" - {
-    "When" - {
-      "Then" in {
-        assert(Main.balance("I told him (that it's not (yet) done).\n(But he wasn't listening)".toList))
+  "Given a second string as an argument" - {
+    "When the balance function is run" - {
+      "Then it should return true" in {
+        Main.balance("I told him (that it's not (yet) done).\n(But he wasn't listening)") shouldBe true
       }
     }
   }
 
-  "Given" - {
-    "When" - {
-      "Then" in {
-        assert(!Main.balance(":-)".toList))
+  "Given a third string as an argument" - {
+    "When the balance function is run" - {
+      "Then it should return false" in {
+        Main.balance(":-)".toList) shouldBe false
       }
     }
   }
 
-  "Given" - {
-    "When" - {
-      "Then" in {
-        assert(!Main.balance("())(".toList))
+  "Given the last string as an argument" - {
+    "When the balance function is run" - {
+      "Then it should return false" in {
+        Main.balance("())(".toList) shouldBe false
       }
     }
   }
