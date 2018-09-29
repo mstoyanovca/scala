@@ -2,7 +2,7 @@ package recfun
 
 import org.scalatest.{FreeSpec, Matchers}
 
-class PascalSuite extends FreeSpec with Matchers {
+class Pascal extends FreeSpec with Matchers {
 
   "Given a Pascal's Triangle" - {
     "When the column is 0" - {

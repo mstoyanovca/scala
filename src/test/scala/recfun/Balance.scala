@@ -2,7 +2,7 @@ package recfun
 
 import org.scalatest.{FreeSpec, Matchers}
 
-class BalanceSuite extends FreeSpec with Matchers {
+class Balance extends FreeSpec with Matchers {
 
   "Given a string as an argument" - {
     "When the balance function is run" - {

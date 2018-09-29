@@ -2,7 +2,7 @@ package recfun
 
 import org.scalatest.{FreeSpec, Matchers}
 
-class CountChangeSuite extends FreeSpec with Matchers {
+class CountChange extends FreeSpec with Matchers {
 
   "Given change of 4" - {
     "When the list of coin denominations is (1)" - {
