@@ -1,14 +1,12 @@
 package objects
 
-import io.circe.syntax._
+import io.circe.parser._
 
 object TweetReader {
 
   object ParseTweets {
 
-    def getList[T](s: String): List[T] = s.asInstanceOf[List[T]]
-
-    def getMap(s: String): Map[String, Any] = s.asInstanceOf[Map[String, Any]]
+    def getList[T](s: String): List[T] = List(parse(s).getOrElse(Array.empty)).asInstanceOf[List[T]]
 
     def getTweets(user: String, json: String): List[Tweet] =
       for (map <- getList[Map[String, Any]](json)) yield {
@@ -19,7 +17,7 @@ object TweetReader {
 
     def getTweetData(user: String, json: String): List[Tweet] = {
       // is list
-      val l = getList[Map[String, Any]](json)
+      val l: List[Map[String, Any]] = getList(json)
       for (map <- l) yield {
         val text = map("text")
         val retweets = map("retweets")

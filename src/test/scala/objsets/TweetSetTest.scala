@@ -1,6 +1,6 @@
 package objsets
 
-import objects.{Empty, Tweet, TweetSet}
+import objects.{Empty, Tweet, TweetList, TweetSet}
 import org.scalatest.{FreeSpec, Matchers}
 
 class TweetSetTest extends FreeSpec with Matchers {
@@ -88,7 +88,7 @@ class TweetSetTest extends FreeSpec with Matchers {
     "When descending: set5 is applied" - {
       "Then" in {
         new TestSets {
-          val trends = set5.descendingByRetweet
+          val trends: TweetList = set5.descendingByRetweet
           trends.isEmpty shouldBe false
           trends.head.user == "a" || trends.head.user == "b" shouldBe true
         }
