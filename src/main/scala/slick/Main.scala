@@ -4,11 +4,13 @@ import java.util.concurrent.TimeUnit
 import slick.dbio.DBIO
 import slick.jdbc.GetResult
 import slick.jdbc.H2Profile.api._
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.concurrent.duration.FiniteDuration
+import scala.util.{Failure, Success}
 
 object Main {
   implicit val getCoffeeResult: AnyRef with GetResult[Coffee] = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
+  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   val coffees: Seq[Coffee] = Seq(
     Coffee("Colombian", 101, 7.99, 0, 0),
@@ -26,12 +28,15 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     val db = Database.forConfig("h2mem")
-    Await.result(
-      db.run(createSuppliers andThen createCoffees andThen DBIO.sequence(suppliers.map(insertSupplier)) andThen DBIO.sequence(coffees.map(insertCoffee))),
-      FiniteDuration(2L, TimeUnit.SECONDS)
-    )
-    val coffeesFromDB: Vector[Coffee] = Await.result(db.run(findAllCoffees()), FiniteDuration(1L, TimeUnit.SECONDS))
-    coffeesFromDB.foreach(println)
+    db.run(createSuppliers andThen createCoffees andThen DBIO.sequence(suppliers.map(insertSupplier)) andThen DBIO.sequence(coffees.map(insertCoffee)))
+      .onComplete {
+        case Success(value) =>
+          val coffeesFromDB: Vector[Coffee] = Await.result(db.run(findAllCoffees()), FiniteDuration(1L, TimeUnit.SECONDS))
+          coffeesFromDB.foreach(println)
+        case Failure(exception) =>
+          exception.printStackTrace()
+      }
+    Thread.sleep(2000)
     db.close
   }
 
