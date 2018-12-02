@@ -1,16 +1,15 @@
 package slick
 
-import java.util.concurrent.TimeUnit
 import slick.dbio.DBIO
 import slick.jdbc.GetResult
 import slick.jdbc.H2Profile.api._
-import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
-import scala.concurrent.duration.FiniteDuration
-import scala.util.{Failure, Success}
+import scala.concurrent._
+import scala.concurrent.duration.Duration
+import scala.util.{Failure, Success, Try}
 
 object Main {
   implicit val getCoffeeResult: AnyRef with GetResult[Coffee] = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
-  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+  implicit val executor: ExecutionContextExecutor = ExecutionContext.global
 
   val coffees: Seq[Coffee] = Seq(
     Coffee("Colombian", 101, 7.99, 0, 0),
@@ -28,15 +27,22 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     val db = Database.forConfig("h2mem")
-    db.run(createSuppliers andThen createCoffees andThen DBIO.sequence(suppliers.map(insertSupplier)) andThen DBIO.sequence(coffees.map(insertCoffee)))
-      .onComplete {
-        case Success(value) =>
-          val coffeesFromDB: Vector[Coffee] = Await.result(db.run(findAllCoffees()), FiniteDuration(1L, TimeUnit.SECONDS))
-          coffeesFromDB.foreach(println)
-        case Failure(exception) =>
-          exception.printStackTrace()
-      }
-    Thread.sleep(2000)
+
+    val result = for {
+      _ <- createSuppliers andThen createCoffees
+      _ <- insertSuppliers(suppliers) andThen insertCoffees(coffees)
+      result <- findAllCoffees()
+    } yield result
+
+    val f: Future[Vector[Coffee]] = db.run(result)
+
+    Try(Await.result(f, Duration.Inf)) match {
+      case Success(value) =>
+        value.foreach(println(_))
+      case Failure(exception) =>
+        exception.printStackTrace()
+    }
+
     db.close
   }
 
@@ -62,8 +68,16 @@ object Main {
     sqlu"insert into coffees values (${c.name}, ${c.supID}, ${c.price}, ${c.sales}, ${c.total})"
   }
 
+  def insertCoffees(coffees: Seq[Coffee]): DBIO[Seq[Int]] = {
+    DBIO.sequence(coffees.map(c => sqlu"insert into coffees values (${c.name}, ${c.supID}, ${c.price}, ${c.sales}, ${c.total})"))
+  }
+
   def insertSupplier(s: Supplier): DBIO[Int] = {
     sqlu"insert into suppliers values(${s.id}, ${s.name}, ${s.street}, ${s.city}, ${s.state}, ${s.zip})"
+  }
+
+  def insertSuppliers(suppliers: Seq[Supplier]): DBIO[Seq[Int]] = {
+    DBIO.sequence(suppliers.map(s => sqlu"insert into suppliers values(${s.id}, ${s.name}, ${s.street}, ${s.city}, ${s.state}, ${s.zip})"))
   }
 
   def findAllCoffees(): DBIO[Vector[Coffee]] = {
