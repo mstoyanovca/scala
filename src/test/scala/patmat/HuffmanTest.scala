@@ -1,21 +1,17 @@
 package patmat
 
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 import patmat.Huffman._
 
-class HuffmanTest extends FreeSpec with Matchers {
-
-  trait TestTrees {
-    val t1 = Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)
-    val t2 = Fork(Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), Leaf('d', 4), List('a', 'b', 'd'), 9)
-  }
+class HuffmanTest extends AnyFreeSpec with Matchers {
+  private val t1 = Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)
+  private val t2 = Fork(Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), Leaf('d', 4), List('a', 'b', 'd'), 9)
 
   "Given the TestTrees trait" - {
     "When an instance is created" - {
       "Then weight of a larger tree" in {
-        new TestTrees {
-          weight(t1) shouldBe 5
-        }
+        weight(t1) shouldBe 5
       }
     }
   }
@@ -23,9 +19,7 @@ class HuffmanTest extends FreeSpec with Matchers {
   "Given the TestTrees trait" - {
     "When an instance is created" - {
       "Then chars of a larger tree" in {
-        new TestTrees {
-          chars(t2) shouldBe List('a', 'b', 'd')
-        }
+        chars(t2) shouldBe List('a', 'b', 'd')
       }
     }
   }
@@ -58,9 +52,7 @@ class HuffmanTest extends FreeSpec with Matchers {
   "Given the TestTrees trait" - {
     "When an instance is created" - {
       "Then decode and encode a very short text should be identity" in {
-        new TestTrees {
-          decode(t1, encode(t1)("ab".toList)) shouldBe "ab".toList
-        }
+        decode(t1, encode(t1)("ab".toList)) shouldBe "ab".toList
       }
     }
   }

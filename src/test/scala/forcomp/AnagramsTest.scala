@@ -1,9 +1,10 @@
 package forcomp
 
 import forcomp.Anagrams._
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class AnagramsTest extends FreeSpec with Matchers {
+class AnagramsTest extends AnyFreeSpec with Matchers {
 
   "Given the Anagrams object" - {
     "When wordOccurrences: abcd" - {

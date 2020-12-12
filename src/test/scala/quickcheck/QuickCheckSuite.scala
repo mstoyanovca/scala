@@ -1,13 +1,13 @@
 package quickcheck
 
-import org.scalatest.FunSuite
-import org.scalatest.prop.Checkers
 import org.scalacheck.Prop
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatestplus.scalacheck.Checkers
 
 object QuickCheckBinomialHeap extends QuickCheckHeap with BinomialHeap
 
-class QuickCheckSuite extends FunSuite with Checkers {
+class QuickCheckSuite extends AnyFunSuite with Checkers {
   def checkBogus(p: Prop) {
     var ok = false
     try {

@@ -1,6 +1,5 @@
 package objects
 
-// real tweet data, collected on Oct 1
 object TweetData {
   val gizmodo = """[
 { "user": "gizmodo", "text": "Kindle Paperwhite Review: Forget Everything Else, This Is the E-Reader You Want http://t.co/737W6aNC", "retweets": 51.0 },

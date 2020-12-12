@@ -1,8 +1,9 @@
 package streams
 
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class BloxorzSuite extends FreeSpec with Matchers {
+class BloxorzSuite extends AnyFreeSpec with Matchers {
 
   trait SolutionChecker extends GameDef with Solver with StringParserTerrain {
     /**

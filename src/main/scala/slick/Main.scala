@@ -3,8 +3,9 @@ package slick
 import slick.jdbc.H2Profile.api._
 import slick.model.{Coffee, Supplier}
 import slick.repository.{CoffeeRepository, SupplierRepository}
-import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
+
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
 object Main {

@@ -1,7 +1,8 @@
 package objects
 
-import io.circe.generic.auto._
 import io.circe.parser._
+
+import scala.annotation.tailrec
 
 object TweetReader {
   def getTweetData(user: String, json: String): List[Tweet] = decode[List[Tweet]](json).getOrElse(List())
@@ -20,6 +21,7 @@ object TweetReader {
 
   val tweetSets: List[TweetSet] = sources.map(tweets => toTweetSet(tweets))
 
+  @tailrec
   private def unionOfAllTweetSets(curSets: List[TweetSet], acc: TweetSet): TweetSet = {
     if (curSets.isEmpty) acc
     else unionOfAllTweetSets(curSets.tail, acc.union(curSets.head))
